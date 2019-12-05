@@ -26,7 +26,7 @@ RUN apk add -U --no-cache \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
     && composer global require "hirak/prestissimo:0.3.7"
 
-ADD devfs /
+ADD dev-fs /
 
 RUN HOST_IP="$(/sbin/ip route|awk '/default/ { print $3 }')" \
     && sed -i "$ a\xdebug.remote_host=${HOST_IP}" /etc/php7/conf.d/00_xdebug.ini
