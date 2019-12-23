@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - fpm
+
+  fpm:
+    image: macnificos/php-alpine:7.4-dev
+    expose:
+      - 9000
+    volumes:
+      - ".:/app"
