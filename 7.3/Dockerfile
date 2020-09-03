@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.11
 
 LABEL maintainer="Luis Tacón <luis@tacon.eu>"
 
