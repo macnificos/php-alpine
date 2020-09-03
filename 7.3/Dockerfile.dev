@@ -1,4 +1,4 @@
-FROM macnificos/php-alpine:7.3
+FROM macnificos/php-alpine:7.3.11
 
 ARG USER=root
 ARG PASSWORD=root
