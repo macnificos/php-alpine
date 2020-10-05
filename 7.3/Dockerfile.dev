@@ -1,4 +1,4 @@
-FROM macnificos/php-alpine:7.3
+FROM macnificos/php-alpine:7.3.21
 
 ARG USER=root
 ARG PASSWORD=root
@@ -6,16 +6,16 @@ ARG PASSWORD=root
 ARG COMPOSER_VERSION=1.6.3
 
 RUN apk add -U --no-cache \
-        php7-pear \
-        openssh \
-        supervisor \
-        autoconf \
-        git \
-        curl \
-        wget \
-        make \
-        zip \
-        php7-xdebug@cast \
+    php7-pear \
+    openssh \
+    supervisor \
+    autoconf \
+    git \
+    curl \
+    wget \
+    make \
+    zip \
+    php7-xdebug@cast \
     # Delete APK cache.
     && rm -rf /var/cache/apk/* \
     # Create ssh user for dev.
