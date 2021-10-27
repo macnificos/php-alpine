@@ -3,6 +3,8 @@ FROM macnificos/php-alpine:7.4.14
 ARG USER=root
 ARG PASSWORD=root
 
+ARG COMPOSER_VERSION=2.1.9
+
 RUN apk add -U --no-cache \
     php7-pear \
     openssh \
@@ -21,7 +23,7 @@ RUN apk add -U --no-cache \
     && echo "${USER}:${PASSWORD}" | chpasswd \
     && ssh-keygen -A \
     # Download composer.
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION}
 
 ADD dev-fs /
 
