@@ -41,7 +41,8 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/co
     php7-dom \
     php7-redis \
     php7-fpm \
-    php7-sodium
+    php7-sodium \
+    php7-simplexml
 
 # iconv hack https://github.com/docker-library/php/issues/240
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
