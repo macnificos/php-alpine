@@ -1,50 +1,47 @@
-FROM alpine:3.11
+FROM alpine:3.12 as main
 
 LABEL maintainer="Luis Tacón <luis@tacon.eu>"
 
-ADD https://packages.whatwedo.ch/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
-
-
-RUN apk --update add ca-certificates \
-    && echo "@cast https://packages.whatwedo.ch/php-alpine/v3.11/php-7.3" >> /etc/apk/repositories \
-    && apk add -U \
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv \
+    && apk add -U --no-cache \
     # Packages
     tini \
-    php7@cast \
-    php7-dev@cast \
-    php7-common@cast \
-    php7-apcu@cast \
-    php7-gd@cast \
-    php7-xmlreader@cast \
-    php7-bcmath@cast \
-    php7-ctype@cast \
-    php7-curl@cast \
-    php7-exif@cast \
-    php7-iconv@cast \
-    php7-intl@cast \
-    php7-json@cast \
-    php7-mbstring@cast \
-    php7-opcache@cast \
-    php7-openssl@cast \
-    php7-pcntl@cast \
-    php7-pdo@cast \
-    php7-mysqlnd@cast \
-    php7-pdo_mysql@cast \
-    php7-pdo_pgsql@cast \
-    php7-phar@cast \
-    php7-posix@cast \
-    php7-session@cast \
-    php7-xml@cast \
-    php7-xsl@cast \
-    php7-zip@cast \
-    php7-zlib@cast \
-    php7-dom@cast \
-    php7-redis@cast \
-    php7-fpm@cast \
-    php7-sodium@cast \
-    # Clean up
-    && ln -s /usr/bin/php7 /usr/bin/php \
-    && rm -rf /var/cache/apk/*
+    php7 \
+    php7-amqp \
+    php7-dev \
+    php7-common \
+    php7-pecl-apcu \
+    php7-gd \
+    php7-xmlreader \
+    php7-bcmath \
+    php7-ctype \
+    php7-curl \
+    php7-exif \
+    php7-iconv \
+    php7-intl \
+    php7-json \
+    php7-mbstring \
+    php7-opcache \
+    php7-openssl \
+    php7-pcntl \
+    php7-pdo \
+    php7-mysqlnd \
+    php7-pdo_mysql \
+    php7-pdo_pgsql \
+    php7-phar \
+    php7-posix \
+    php7-session \
+    php7-xml \
+    php7-xsl \
+    php7-zip \
+    php7-zlib \
+    php7-dom \
+    php7-redis \
+    php7-fpm \
+    php7-sodium 
+    
+# iconv hack https://github.com/docker-library/php/issues/240
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 ADD fs /
 
@@ -55,3 +52,41 @@ CMD ["/usr/sbin/php-fpm7", "-R", "--nodaemonize"]
 EXPOSE 9000
 
 WORKDIR /app
+
+FROM main as dev
+
+ARG USER=root
+ARG PASSWORD=root
+
+ARG COMPOSER_VERSION=1.10.1
+
+RUN apk add -U --no-cache \
+    php7-pear \
+    openssh \
+    supervisor \
+    autoconf \
+    git \
+    curl \
+    wget \
+    make \
+    zip \
+    php7-xdebug \
+    # Delete APK cache.
+    && rm -rf /var/cache/apk/* \
+    # Create ssh user for dev.
+    && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
+    && echo "${USER}:${PASSWORD}" | chpasswd \
+    && ssh-keygen -A \
+    # Download composer.
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
+    && composer global require "hirak/prestissimo:0.3.10"
+
+ADD dev-fs /
+
+RUN HOST_IP="$(/sbin/ip route|awk '/default/ { print $3 }')" \
+    && sed -i "$ a\xdebug.remote_host=${HOST_IP}" /etc/php7/conf.d/00_xdebug.ini
+
+CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord/conf.d/supervisord.conf"]
+
+EXPOSE 22 9000
+

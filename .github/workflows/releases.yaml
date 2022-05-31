@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  push-to-registry:
+    strategy:
+      fail-fast: true
+      matrix:
+        version: [ "7.3", "7.4", "8.0" ]
+    env:
+      VERSION: ${{ matrix.version }}
+    name: release-${{ matrix.version }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+         make release
