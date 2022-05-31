@@ -11,12 +11,12 @@ test-main:
 	$(DOCKER_RUN) php -v
 	$(DOCKER_RUN) sh -c "php -v | grep ${VERSION}"
 	$(DOCKER_RUN) sh -c "php -v | grep OPcache"
-	$(DOCKER_RUN) sh -c "php test/test.php | grep Iyo"
+	$(DOCKER_RUN) sh -c "php test/test.php | grep Mensaje"
 	$(DOCKER_RUN) sh -c "echo \"<?php echo ini_get('memory_limit');\" | php | grep 256M"
 test-dev:
 	$(DOCKER_RUN_DEV) sh -c "php -v | grep Xdebug"
 	$(DOCKER_RUN_DEV) composer --version
-	$(DOCKER_RUN_DEV) sh -c "php test/test.php | grep Iyo"
+	$(DOCKER_RUN_DEV) sh -c "php test/test.php | grep Mensaje"
 	$(DOCKER_RUN_DEV) sh -c "echo \"<?php echo ini_get('memory_limit');\" | php | grep 1G"
 release: build
 	$(eval export SEMVER=$(shell docker run --rm -v $(PWD):/app ${REPO}:${VERSION} php -r "echo phpversion();"))
