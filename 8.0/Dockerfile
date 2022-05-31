@@ -18,6 +18,7 @@ RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/co
     php8-iconv \
     php8-intl \
     php8-mbstring \
+    php8-pdo_mysql \
     php8-opcache \
     php8-openssl \
     php8-pcntl \
