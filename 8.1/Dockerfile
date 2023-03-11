@@ -49,7 +49,7 @@ EXPOSE 9000
 
 WORKDIR /app
 
-FROM --platform=$BUILDPLATFORM main as dev
+FROM main as dev
 
 ARG USER=root
 ARG PASSWORD=root
