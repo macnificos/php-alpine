@@ -1,4 +1,4 @@
-FROM alpine:3.17 as main
+FROM --platform=linux/amd64 alpine:3.17 as main
 
 LABEL maintainer="Luis Tacón <luis@tacon.eu>"
 
@@ -10,40 +10,40 @@ RUN apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main 
     && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted gnu-libiconv \
     # Packages
     tini \
-    php81 \
-    php81-dev \
-    php81-common \
-    php81-gd \
-    php81-xmlreader \
-    php81-bcmath \
-    php81-ctype \
-    php81-curl \
-    php81-exif \
-    php81-iconv \
-    php81-intl \
-    php81-mbstring \
-    php81-opcache \
-    php81-openssl \
-    php81-pcntl \
-    php81-phar \
-    php81-session \
-    php81-xml \
-    php81-xsl \
-    php81-zip \
-    php81-zlib \
-    php81-dom \
-    php81-fpm \
-    php81-sodium \
-    php81-tokenizer \
+    php82 \
+    php82-dev \
+    php82-common \
+    php82-gd \
+    php82-xmlreader \
+    php82-bcmath \
+    php82-ctype \
+    php82-curl \
+    php82-exif \
+    php82-iconv \
+    php82-intl \
+    php82-mbstring \
+    php82-opcache \
+    php82-openssl \
+    php82-pcntl \
+    php82-phar \
+    php82-session \
+    php82-xml \
+    php82-xsl \
+    php82-zip \
+    php82-zlib \
+    php82-dom \
+    php82-fpm \
+    php82-sodium \
+    php82-tokenizer \
     # Iconv Fix
-    php81-pecl-apcu \
-    && ln -sf /usr/bin/php81 /usr/bin/php
+    php82-pecl-apcu \
+    && ln -sf /usr/bin/php82 /usr/bin/php
 
 ADD rootfs /
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["/usr/sbin/php-fpm81", "-R", "--nodaemonize"]
+CMD ["/usr/sbin/php-fpm82", "-R", "--nodaemonize"]
 
 EXPOSE 9000
 
@@ -57,7 +57,7 @@ ARG PASSWORD=root
 ARG COMPOSER_VERSION=2.5.1
 
 RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/   \
-        php81-pear \
+        php82-pear \
         openssh \
         supervisor \
         autoconf \
@@ -66,7 +66,7 @@ RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge
         wget \
         make \
         zip \
-        php81-xdebug \
+        php82-xdebug \
     # Delete APK cache.
     && rm -rf /var/cache/apk/* \
     # Create ssh user for dev.
